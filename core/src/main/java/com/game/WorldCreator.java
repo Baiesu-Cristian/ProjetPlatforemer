@@ -6,7 +6,9 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
 
 public class WorldCreator {
-    public WorldCreator(World world, TiledMap map) {
+    public WorldCreator(PlayScreen screen) {
+        World world = screen.getWorld();
+        TiledMap map = screen.getMap();
         // create body and fixture variables
         BodyDef bdef = new BodyDef();
         PolygonShape shape = new PolygonShape();
@@ -25,8 +27,8 @@ public class WorldCreator {
             body.createFixture(fdef);
         }
 
-        // create bridge bodies
-        for (RectangleMapObject object : map.getLayers().get("bridge").getObjects().getByType(RectangleMapObject.class)) {
+        // create wall bodies (for enemies)
+        for (RectangleMapObject object : map.getLayers().get("wall").getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = object.getRectangle();
             bdef.type = BodyDef.BodyType.StaticBody;
             bdef.position.set((rect.getX() + rect.getWidth() / 2) / Platformer.PPM, (rect.getY() + rect.getHeight() / 2) / Platformer.PPM);
@@ -34,21 +36,22 @@ public class WorldCreator {
             body = world.createBody(bdef);
             shape.setAsBox(rect.getWidth() / 2 / Platformer.PPM, rect.getHeight() / 2 / Platformer.PPM);
             fdef.shape = shape;
+            fdef.filter.categoryBits = Platformer.WALL_BIT;
             body.createFixture(fdef);
         }
 
-        //create fruit bodies
-        for (RectangleMapObject object : map.getLayers().get("fruits").getObjects().getByType(RectangleMapObject.class)) {
+        //create coin bodies
+        for (RectangleMapObject object : map.getLayers().get("coin").getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = object.getRectangle();
 
-            new Fruit(world, map, rect);
+            new Coin(screen, rect);
         }
 
         // create box bodies
         for (RectangleMapObject object : map.getLayers().get("box").getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = object.getRectangle();
 
-            new Box(world, map, rect);
+            new Box(screen, rect);
         }
     }
 }

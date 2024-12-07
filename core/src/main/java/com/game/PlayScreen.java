@@ -28,11 +28,12 @@ public class PlayScreen implements Screen {
     private World world;
     private Box2DDebugRenderer b2dr;
     private Player player;
+    private Snail snail;
 
     public PlayScreen(Platformer game) {
         this.game = game;
 
-        atlas = new TextureAtlas("test");
+        atlas = new TextureAtlas("test3");
         // create cam used to follow player through world
         gamecam = new OrthographicCamera();
         // create a fitViewport to maintain virtual aspect ratio despite screen adjustments
@@ -48,15 +49,24 @@ public class PlayScreen implements Screen {
         // de scos
         b2dr = new Box2DDebugRenderer();
         // create player
-        player = new Player(world, this);
+        player = new Player(this);
+        snail = new Snail(this, .32f, .32f);
 
-        new WorldCreator(world, map);
+        new WorldCreator(this);
 
         world.setContactListener(new WorldContactListener());
     }
 
     public TextureAtlas getAtlas() {
         return atlas;
+    }
+
+    public TiledMap getMap() {
+        return map;
+    }
+
+    public World getWorld() {
+        return world;
     }
 
     @Override
@@ -82,6 +92,7 @@ public class PlayScreen implements Screen {
         world.step(1/60f, 6, 2);
         // update player's position
         player.update(delta);
+        snail.update(delta);
         // camera follows player
         gamecam.position.x = player.body.getPosition().x;
         gamecam.update();
@@ -103,6 +114,7 @@ public class PlayScreen implements Screen {
         game.batch.setProjectionMatrix(gamecam.combined);
         game.batch.begin();
         player.draw(game.batch);
+        snail.draw(game.batch);
         game.batch.end();
     }
 

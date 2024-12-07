@@ -20,9 +20,9 @@ public class Player extends Sprite {
     private float stateTimer;
     private boolean runningRight;
 
-    public Player(World world, PlayScreen screen) {
-        super(screen.getAtlas().findRegion("Idle (32x32)"));
-        this.world = world;
+    public Player(PlayScreen screen) {
+        super(screen.getAtlas().findRegion("ninja"));
+        this.world = screen.getWorld();
         currentState = State.STANDING;
         previousState = State.STANDING;
         stateTimer = 0;
@@ -37,12 +37,12 @@ public class Player extends Sprite {
         frames.clear();
 
         // jumping animation
-        frames.add(new TextureRegion(getTexture(), 41 * 32 + 10, 0, 32, 32));
+        frames.add(new TextureRegion(getTexture(), 41 * 32, 0, 32, 32));
         playerJump = new Animation<>(0.1f, frames);
         frames.clear();
 
         // falling animation
-        frames.add(new TextureRegion(getTexture(), 42 * 32 + 10, 0, 32, 32));
+        frames.add(new TextureRegion(getTexture(), 42 * 32, 0, 32, 32));
         playerFall = new Animation<>(0.1f, frames);
         frames.clear();
 
@@ -100,7 +100,7 @@ public class Player extends Sprite {
 
     public void definePlayer() {
         BodyDef bdef = new BodyDef();
-        bdef.position.set(32 / Platformer.PPM, 32 / Platformer.PPM);
+        bdef.position.set(48 / Platformer.PPM, 48 / Platformer.PPM);
         bdef.type = BodyDef.BodyType.DynamicBody;
         body = world.createBody(bdef);
 
@@ -111,7 +111,7 @@ public class Player extends Sprite {
         // set the player's filter
         fdef.filter.categoryBits = Platformer.PLAYER_BIT;
         // what the player can collide with
-        fdef.filter.maskBits = Platformer.DEFAULT_BIT | Platformer.BOX_BIT | Platformer.FRUIT_BIT;
+        fdef.filter.maskBits = Platformer.Ground_BIT | Platformer.BOX_BIT | Platformer.COIN_BIT | Platformer.WALL_BIT | Platformer.ENEMY_BIT | Platformer.ENEMY_HEAD_BIT;
 
         fdef.shape = shape;
         body.createFixture(fdef);

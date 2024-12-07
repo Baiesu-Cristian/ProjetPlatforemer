@@ -14,9 +14,9 @@ public abstract class Interactive {
     protected Body body;
     protected Fixture fixture;
 
-    public Interactive(World world, TiledMap map, Rectangle bounds) {
-        this.world = world;
-        this.map = map;
+    public Interactive(PlayScreen screen, Rectangle bounds) {
+        this.world = screen.getWorld();
+        this.map = screen.getMap();
         this.bounds = bounds;
 
         BodyDef bdef = new BodyDef();
