@@ -26,9 +26,10 @@ public class PlayScreen implements Screen {
     private OrthogonalTiledMapRenderer renderer;
     // box2d variables
     private World world;
+    private WorldCreator creator;
     private Box2DDebugRenderer b2dr;
+    // sprites
     private Player player;
-    private Snail snail;
 
     public PlayScreen(Platformer game) {
         this.game = game;
@@ -50,9 +51,8 @@ public class PlayScreen implements Screen {
         b2dr = new Box2DDebugRenderer();
         // create player
         player = new Player(this);
-        snail = new Snail(this, .32f, .32f);
 
-        new WorldCreator(this);
+        creator = new WorldCreator(this);
 
         world.setContactListener(new WorldContactListener());
     }
@@ -92,8 +92,11 @@ public class PlayScreen implements Screen {
         world.step(1/60f, 6, 2);
         // update player's position
         player.update(delta);
-        snail.update(delta);
-        // camera follows player
+        // update snails
+        for (Enemy enemy : creator.getSnails()) {
+            enemy.update(delta);
+        }
+        // camera follows player's x coordinates
         gamecam.position.x = player.body.getPosition().x;
         gamecam.update();
         renderer.setView(gamecam);
@@ -114,7 +117,9 @@ public class PlayScreen implements Screen {
         game.batch.setProjectionMatrix(gamecam.combined);
         game.batch.begin();
         player.draw(game.batch);
-        snail.draw(game.batch);
+        for (Enemy enemy : creator.getSnails()) {
+            enemy.draw(game.batch);
+        }
         game.batch.end();
     }
 

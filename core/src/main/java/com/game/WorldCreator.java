@@ -4,8 +4,11 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.utils.Array;
 
 public class WorldCreator {
+    private Array<Snail> snails;
+
     public WorldCreator(PlayScreen screen) {
         World world = screen.getWorld();
         TiledMap map = screen.getMap();
@@ -43,15 +46,24 @@ public class WorldCreator {
         //create coin bodies
         for (RectangleMapObject object : map.getLayers().get("coin").getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = object.getRectangle();
-
             new Coin(screen, rect);
         }
 
         // create box bodies
         for (RectangleMapObject object : map.getLayers().get("box").getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = object.getRectangle();
-
             new Box(screen, rect);
         }
+
+        // create snails
+        snails = new Array<Snail>();
+        for (RectangleMapObject object : map.getLayers().get("snail").getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rect = object.getRectangle();
+            snails.add(new Snail(screen, rect.getX() / Platformer.PPM, rect.getY() / Platformer.PPM));
+        }
+    }
+
+    public Array<Snail> getSnails() {
+        return snails;
     }
 }

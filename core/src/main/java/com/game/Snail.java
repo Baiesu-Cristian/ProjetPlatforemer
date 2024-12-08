@@ -1,6 +1,7 @@
 package com.game;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -31,11 +32,14 @@ public class Snail extends Enemy{
 
     public void update(float delta) {
         stateTime += delta;
+        // destroy the body
         if (setToDestroy && !destroyed) {
             world.destroyBody(body);
             destroyed = true;
             setRegion(new TextureRegion(screen.getAtlas().findRegion("snail"), 380, 0, 38, 24));
+            stateTime = 0;
         } else if (!destroyed) {
+            body.setLinearVelocity(velocity);
             setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
             setRegion(snailWalk.getKeyFrame(stateTime, true));
         }
@@ -53,19 +57,19 @@ public class Snail extends Enemy{
         CircleShape shape = new CircleShape();
         shape.setRadius(5 / Platformer.PPM);
 
-        // set the player's filter
+        // set the snail's filter
         fdef.filter.categoryBits = Platformer.ENEMY_BIT;
-        // what the player can collide with
-        fdef.filter.maskBits = Platformer.Ground_BIT | Platformer.BOX_BIT | Platformer.COIN_BIT | Platformer.PLAYER_BIT;
+        // what the snail can collide with
+        fdef.filter.maskBits = Platformer.Ground_BIT | Platformer.BOX_BIT | Platformer.COIN_BIT | Platformer.PLAYER_BIT | Platformer.WALL_BIT | Platformer.ENEMY_BIT;
 
         fdef.shape = shape;
-        body.createFixture(fdef);
+        body.createFixture(fdef).setUserData(this);
 
         //create snail's head
         PolygonShape head = new PolygonShape();
         Vector2[] vertices = new Vector2[4];
-        vertices[0] = new Vector2(-7, 6).scl(1 / Platformer.PPM);
-        vertices[1] = new Vector2(7, 6).scl(1 / Platformer.PPM);
+        vertices[0] = new Vector2(-4, 6).scl(1 / Platformer.PPM);
+        vertices[1] = new Vector2(4, 6).scl(1 / Platformer.PPM);
         vertices[2] = new Vector2(-3, 3).scl(1 / Platformer.PPM);
         vertices[3] = new Vector2(3, 3).scl(1 / Platformer.PPM);
         head.set(vertices);
@@ -77,6 +81,14 @@ public class Snail extends Enemy{
         body.createFixture(fdef).setUserData(this);
     }
 
+    // the shell disappears after 2 seconds
+    public void draw(Batch batch) {
+        if (!destroyed || stateTime < 2) {
+            super.draw(batch);
+        }
+    }
+
+    // if snail gets hit on head, it gets destroyed
     @Override
     public void hitOnHead() {
         setToDestroy = true;
