@@ -1,10 +1,10 @@
 package com.game;
 
-import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.maps.MapObject;
 
 public class Coin extends Interactive{
-    public Coin(PlayScreen screen, Rectangle bounds) {
-        super(screen, bounds);
+    public Coin(PlayScreen screen, MapObject object) {
+        super(screen, object);
         fixture.setUserData(this);
         setCategoryFilter(Platformer.COIN_BIT);
     }

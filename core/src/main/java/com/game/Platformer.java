@@ -9,6 +9,7 @@ public class Platformer extends Game {
     public static final float PPM = 100;
 
     //default values for filters
+    public static final short Nothing_BIT = 0;
     public static final short Ground_BIT = 1;
     public static final short PLAYER_BIT = 2;
     public static final short BOX_BIT = 4;

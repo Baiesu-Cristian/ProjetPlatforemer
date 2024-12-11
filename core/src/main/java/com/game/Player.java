@@ -8,7 +8,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 
 public class Player extends Sprite {
-    public enum State {STANDING, RUNNING, JUMPING, FALLING}
+    public enum State {STANDING, RUNNING, JUMPING, FALLING, DEAD}
     public State currentState;
     public State previousState;
     public World world;
@@ -17,8 +17,10 @@ public class Player extends Sprite {
     private Animation<TextureRegion> playerRun;
     private Animation<TextureRegion> playerJump;
     private Animation<TextureRegion> playerFall;
+    private Animation<TextureRegion> playerDead;
     private float stateTimer;
     private boolean runningRight;
+    private boolean playerIsDead;
 
     public Player(PlayScreen screen) {
         super(screen.getAtlas().findRegion("ninja"));
@@ -49,6 +51,13 @@ public class Player extends Sprite {
         // standing frame
         playerStand = new TextureRegion(getTexture(), 0, 0, 32, 32);
 
+        // getting hit animation
+        for (int i = 23; i < 30; i++) {
+            frames.add(new TextureRegion(getTexture(), i*32, 0, 32, 32));
+        }
+        playerDead = new Animation<>(0.1f, frames);
+        frames.clear();
+
         definePlayer();
         setBounds(0, 0, 16 / Platformer.PPM, 16 / Platformer.PPM);
         setRegion(playerStand);
@@ -65,6 +74,7 @@ public class Player extends Sprite {
             case JUMPING -> playerJump.getKeyFrame(stateTimer);
             case RUNNING -> playerRun.getKeyFrame(stateTimer, true);
             case FALLING -> playerFall.getKeyFrame(stateTimer);
+            case DEAD -> playerDead.getKeyFrame(stateTimer);
             default -> playerStand;
         };
 
@@ -84,7 +94,10 @@ public class Player extends Sprite {
     }
 
     public State getState() {
-        if (body.getLinearVelocity().y > 0) {
+        if (playerIsDead) {
+            return State.DEAD;
+        }
+        else if (body.getLinearVelocity().y > 0) {
             return State.JUMPING;
         }
         else if (body.getLinearVelocity().y < 0) {
@@ -114,12 +127,22 @@ public class Player extends Sprite {
         fdef.filter.maskBits = Platformer.Ground_BIT | Platformer.BOX_BIT | Platformer.COIN_BIT | Platformer.WALL_BIT | Platformer.ENEMY_BIT | Platformer.ENEMY_HEAD_BIT;
 
         fdef.shape = shape;
-        body.createFixture(fdef);
+        body.createFixture(fdef).setUserData(this);
 
         EdgeShape head = new EdgeShape();
         head.set(new Vector2(-2/Platformer.PPM, 6/Platformer.PPM), new Vector2(2/Platformer.PPM, 6/Platformer.PPM));
         fdef.shape = head;
         fdef.isSensor = true;
         body.createFixture(fdef).setUserData("head");
+    }
+
+    public void hit() {
+        playerIsDead = true;
+        Filter filter = new Filter();
+        filter.maskBits = Platformer.Nothing_BIT;
+        for (Fixture fixture : body.getFixtureList()) {
+            fixture.setFilterData(filter);
+        }
+        body.applyLinearImpulse(new Vector2(1f, 4f), body.getWorldCenter(), true);
     }
 }

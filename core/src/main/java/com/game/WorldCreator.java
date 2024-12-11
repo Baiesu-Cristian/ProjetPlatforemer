@@ -45,14 +45,12 @@ public class WorldCreator {
 
         //create coin bodies
         for (RectangleMapObject object : map.getLayers().get("coin").getObjects().getByType(RectangleMapObject.class)) {
-            Rectangle rect = object.getRectangle();
-            new Coin(screen, rect);
+            new Coin(screen, object);
         }
 
         // create box bodies
         for (RectangleMapObject object : map.getLayers().get("box").getObjects().getByType(RectangleMapObject.class)) {
-            Rectangle rect = object.getRectangle();
-            new Box(screen, rect);
+            new Box(screen, object);
         }
 
         // create snails

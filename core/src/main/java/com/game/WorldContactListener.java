@@ -13,6 +13,7 @@ public class WorldContactListener implements ContactListener {
         int cDef = fixA.getFilterData().categoryBits | fixB.getFilterData().categoryBits;
 
         // collision with player's head, check which fixture is the head and which is the object
+        // se scoate in ep.25
         if (fixA.getUserData() == "head" || fixB.getUserData() == "head") {
             Fixture head = fixA.getUserData() == "head" ? fixA : fixB;
             Fixture object = head == fixA ? fixB : fixA;
@@ -34,6 +35,14 @@ public class WorldContactListener implements ContactListener {
                 ((Enemy) fixB.getUserData()).hitOnHead();
                 }
                 break;
+            // Player collides with enemy and dies
+            case Platformer.PLAYER_BIT | Platformer.ENEMY_BIT:
+                if (fixA.getFilterData().categoryBits == Platformer.PLAYER_BIT) {
+                    ((Player) fixA.getUserData()).hit();
+                } else {
+                    ((Player) fixB.getUserData()).hit();
+                }
+                break;
             // Enemy collides with wall and has to reverse
             case Platformer.ENEMY_BIT | Platformer.WALL_BIT:
                 if (fixA.getFilterData().categoryBits == Platformer.ENEMY_BIT) {
@@ -46,10 +55,6 @@ public class WorldContactListener implements ContactListener {
             case Platformer.ENEMY_BIT | Platformer.ENEMY_BIT:
                 ((Enemy) fixA.getUserData()).reverseVelocity(true, false);
                 ((Enemy) fixB.getUserData()).reverseVelocity(true, false);
-                break;
-            // Player collides with enemy and dies
-            case Platformer.PLAYER_BIT | Platformer.ENEMY_BIT:
-                Gdx.app.log("Player", "died");
                 break;
         }
     }
