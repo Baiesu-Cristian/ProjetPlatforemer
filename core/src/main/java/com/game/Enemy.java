@@ -16,7 +16,7 @@ public abstract class Enemy extends Sprite {
         this.screen = screen;
         setPosition(x, y);
         defineEnemy();
-        velocity = new Vector2(0.5f, 0);
+        velocity = new Vector2(0.2f, 0);
     }
 
     // posibil de scos y

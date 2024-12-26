@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.Array;
 
 public class WorldCreator {
     private Array<Snail> snails;
+    private Array<Mushroom> mushrooms;
 
     public WorldCreator(PlayScreen screen) {
         World world = screen.getWorld();
@@ -59,9 +60,20 @@ public class WorldCreator {
             Rectangle rect = object.getRectangle();
             snails.add(new Snail(screen, rect.getX() / Platformer.PPM, rect.getY() / Platformer.PPM));
         }
+
+        // create mushrooms
+        mushrooms = new Array<Mushroom>();
+        for (RectangleMapObject object : map.getLayers().get("mushroom").getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rect = object.getRectangle();
+            mushrooms.add(new Mushroom(screen, rect.getX() / Platformer.PPM, rect.getY() / Platformer.PPM));
+        }
     }
 
     public Array<Snail> getSnails() {
         return snails;
+    }
+
+    public Array<Mushroom> getMushrooms() {
+        return mushrooms;
     }
 }

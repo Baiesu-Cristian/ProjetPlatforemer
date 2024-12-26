@@ -145,4 +145,12 @@ public class Player extends Sprite {
         }
         body.applyLinearImpulse(new Vector2(1f, 4f), body.getWorldCenter(), true);
     }
+
+    public boolean isDead() {
+        return playerIsDead;
+    }
+
+    public float getStateTimer() {
+        return stateTimer;
+    }
 }

@@ -28,6 +28,7 @@ public class WorldContactListener implements ContactListener {
         switch (cDef) {
             // Player collides with enemy's head
             case Platformer.ENEMY_HEAD_BIT | Platformer.PLAYER_BIT:
+                Gdx.app.log("snail", "moare");
                 // check which fixture is the player and which is the enemy's head
                 if (fixA.getFilterData().categoryBits == Platformer.ENEMY_HEAD_BIT) {
                     ((Enemy) fixA.getUserData()).hitOnHead();
@@ -37,22 +38,31 @@ public class WorldContactListener implements ContactListener {
                 break;
             // Player collides with enemy and dies
             case Platformer.PLAYER_BIT | Platformer.ENEMY_BIT:
+                Gdx.app.log("player", "moare");
                 if (fixA.getFilterData().categoryBits == Platformer.PLAYER_BIT) {
                     ((Player) fixA.getUserData()).hit();
                 } else {
                     ((Player) fixB.getUserData()).hit();
                 }
                 break;
-            // Enemy collides with wall and has to reverse
+            /*// Enemy collides with wall and has to reverse
             case Platformer.ENEMY_BIT | Platformer.WALL_BIT:
                 if (fixA.getFilterData().categoryBits == Platformer.ENEMY_BIT) {
                     ((Enemy) fixA.getUserData()).reverseVelocity(true, false);
                 } else {
                     ((Enemy) fixB.getUserData()).reverseVelocity(true, false);
                 }
+                break;*/
+            // Enemy head collides with wall and has to reverse
+            case Platformer.ENEMY_HEAD_BIT | Platformer.WALL_BIT:
+                if (fixA.getFilterData().categoryBits == Platformer.ENEMY_HEAD_BIT) {
+                    ((Enemy) fixA.getUserData()).reverseVelocity(true, false);
+                } else {
+                    ((Enemy) fixB.getUserData()).reverseVelocity(true, false);
+                }
                 break;
             // Enemy collides with another enemy and they both reverse
-            case Platformer.ENEMY_BIT | Platformer.ENEMY_BIT:
+            case Platformer.ENEMY_BIT:
                 ((Enemy) fixA.getUserData()).reverseVelocity(true, false);
                 ((Enemy) fixB.getUserData()).reverseVelocity(true, false);
                 break;

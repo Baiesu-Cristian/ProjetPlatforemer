@@ -34,7 +34,7 @@ public class PlayScreen implements Screen {
     public PlayScreen(Platformer game) {
         this.game = game;
 
-        atlas = new TextureAtlas("test3");
+        atlas = new TextureAtlas("test4");
         // create cam used to follow player through world
         gamecam = new OrthographicCamera();
         // create a fitViewport to maintain virtual aspect ratio despite screen adjustments
@@ -88,6 +88,10 @@ public class PlayScreen implements Screen {
         }
     }
 
+    public boolean gameOver() {
+        return player.currentState == Player.State.DEAD && player.getStateTimer() > 3;
+    }
+
     public void update(float delta) {
         handleInput();
         // physics
@@ -96,6 +100,9 @@ public class PlayScreen implements Screen {
         player.update(delta);
         // update snails
         for (Enemy enemy : creator.getSnails()) {
+            enemy.update(delta);
+        }
+        for (Enemy enemy : creator.getMushrooms()) {
             enemy.update(delta);
         }
         // camera follows player's x coordinates
@@ -124,7 +131,15 @@ public class PlayScreen implements Screen {
         for (Enemy enemy : creator.getSnails()) {
             enemy.draw(game.batch);
         }
+        for (Enemy enemy : creator.getMushrooms()) {
+            enemy.draw(game.batch);
+        }
         game.batch.end();
+
+        if (gameOver()) {
+            game.setScreen(new GameOverScreen(game));
+            dispose();
+        }
     }
 
     @Override

@@ -10,22 +10,34 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.utils.Array;
 
-public class Snail extends Enemy{
+public class Mushroom extends Enemy{
     private float stateTime;
-    private Animation<TextureRegion> snailWalk;
+    private Animation<TextureRegion> mushroomWalk;
+    private Animation<TextureRegion> mushroomDead;
     private Array<TextureRegion> frames;
     private boolean setToDestroy;
     private boolean destroyed;
 
-    public Snail(PlayScreen screen, float x, float y) {
+    public Mushroom(PlayScreen screen, float x, float y) {
         super(screen, x, y);
         frames = new Array<TextureRegion>();
-        for (int i = 0; i < 10; i++) {
-            frames.add(new TextureRegion(screen.getAtlas().findRegion("snail"), i * 38, 0, 38, 24));
+
+        // walking animation
+        for (int i = 0; i < 16; i++) {
+            frames.add(new TextureRegion(screen.getAtlas().findRegion("mushroom"), i * 32, 0, 32, 32));
         }
-        snailWalk = new Animation<>(0.1f, frames);
+        mushroomWalk = new Animation<>(0.1f, frames);
+        frames.clear();
+
+        // getting hit animation
+        for (int i = 16; i < 21; i++) {
+            frames.add(new TextureRegion(screen.getAtlas().findRegion("mushroom"), i * 32, 0, 32, 32));
+        }
+        mushroomDead = new Animation<>(0.1f, frames);
+        frames.clear();
+
         stateTime = 0;
-        setBounds(getX(), getY(), 19 / Platformer.PPM, 12 / Platformer.PPM);
+        setBounds(getX(), getY(), 15 / Platformer.PPM, 15 / Platformer.PPM);
         setToDestroy = false;
         destroyed = false;
     }
@@ -36,12 +48,12 @@ public class Snail extends Enemy{
         if (setToDestroy && !destroyed) {
             world.destroyBody(body);
             destroyed = true;
-            setRegion(new TextureRegion(screen.getAtlas().findRegion("snail"), 380, 0, 38, 24));
+            setRegion(mushroomDead.getKeyFrame(stateTime, true));
             stateTime = 0;
         } else if (!destroyed) {
             body.setLinearVelocity(velocity);
             setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
-            setRegion(snailWalk.getKeyFrame(stateTime, true));
+            setRegion(mushroomWalk.getKeyFrame(stateTime, true));
         }
     }
 
@@ -70,8 +82,8 @@ public class Snail extends Enemy{
         Vector2[] vertices = new Vector2[4];
         vertices[0] = new Vector2(-6, 6).scl(1 / Platformer.PPM);
         vertices[1] = new Vector2(6, 6).scl(1 / Platformer.PPM);
-        vertices[2] = new Vector2(-3, 3).scl(1 / Platformer.PPM);
-        vertices[3] = new Vector2(3, 3).scl(1 / Platformer.PPM);
+        vertices[2] = new Vector2(-3, 4).scl(1 / Platformer.PPM);
+        vertices[3] = new Vector2(3, 4).scl(1 / Platformer.PPM);
         head.set(vertices);
 
         fdef.shape = head;
@@ -94,4 +106,3 @@ public class Snail extends Enemy{
         setToDestroy = true;
     }
 }
-
