@@ -136,14 +136,19 @@ public class Player extends Sprite {
         body.createFixture(fdef).setUserData("head");
     }
 
-    public void hit() {
-        playerIsDead = true;
-        Filter filter = new Filter();
-        filter.maskBits = Platformer.Nothing_BIT;
-        for (Fixture fixture : body.getFixtureList()) {
-            fixture.setFilterData(filter);
+    public void hit(Enemy enemy) {
+        if (enemy instanceof Snail && ((Snail) enemy).getCurrentState() == Snail.State.STANDING_SHELL) {
+            ((Snail) enemy).kick(this.getX() <= enemy.getX() ? Snail.KICK_RIGHT_SPEED : Snail.KICK_LEFT_SPEED);
+
+        } else {
+            playerIsDead = true;
+            Filter filter = new Filter();
+            filter.maskBits = Platformer.Nothing_BIT;
+            for (Fixture fixture : body.getFixtureList()) {
+                fixture.setFilterData(filter);
+            }
+            body.applyLinearImpulse(new Vector2(1f, 4f), body.getWorldCenter(), true);
         }
-        body.applyLinearImpulse(new Vector2(1f, 4f), body.getWorldCenter(), true);
     }
 
     public boolean isDead() {

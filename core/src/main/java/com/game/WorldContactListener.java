@@ -28,25 +28,23 @@ public class WorldContactListener implements ContactListener {
         switch (cDef) {
             // Player collides with enemy's head
             case Platformer.ENEMY_HEAD_BIT | Platformer.PLAYER_BIT:
-                Gdx.app.log("snail", "moare");
                 // check which fixture is the player and which is the enemy's head
                 if (fixA.getFilterData().categoryBits == Platformer.ENEMY_HEAD_BIT) {
-                    ((Enemy) fixA.getUserData()).hitOnHead();
+                    ((Enemy) fixA.getUserData()).hitOnHead((Player) fixB.getUserData());
                 } else {
-                ((Enemy) fixB.getUserData()).hitOnHead();
+                ((Enemy) fixB.getUserData()).hitOnHead((Player) fixA.getUserData());
                 }
                 break;
             // Player collides with enemy and dies
             case Platformer.PLAYER_BIT | Platformer.ENEMY_BIT:
-                Gdx.app.log("player", "moare");
                 if (fixA.getFilterData().categoryBits == Platformer.PLAYER_BIT) {
-                    ((Player) fixA.getUserData()).hit();
+                    ((Player) fixA.getUserData()).hit((Enemy) fixB.getUserData());
                 } else {
-                    ((Player) fixB.getUserData()).hit();
+                    ((Player) fixB.getUserData()).hit((Enemy) fixA.getUserData());
                 }
                 break;
-            /*// Enemy collides with wall and has to reverse
-            case Platformer.ENEMY_BIT | Platformer.WALL_BIT:
+            // Enemy collides with wall and has to reverse
+            /*case Platformer.ENEMY_BIT | Platformer.WALL_BIT:
                 if (fixA.getFilterData().categoryBits == Platformer.ENEMY_BIT) {
                     ((Enemy) fixA.getUserData()).reverseVelocity(true, false);
                 } else {
@@ -63,8 +61,8 @@ public class WorldContactListener implements ContactListener {
                 break;
             // Enemy collides with another enemy and they both reverse
             case Platformer.ENEMY_BIT:
-                ((Enemy) fixA.getUserData()).reverseVelocity(true, false);
-                ((Enemy) fixB.getUserData()).reverseVelocity(true, false);
+                ((Enemy) fixA.getUserData()).onEnemyHit((Enemy) fixB.getUserData());
+                ((Enemy) fixB.getUserData()).onEnemyHit((Enemy) fixA.getUserData());
                 break;
         }
     }

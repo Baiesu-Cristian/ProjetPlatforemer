@@ -16,7 +16,8 @@ public abstract class Enemy extends Sprite {
         this.screen = screen;
         setPosition(x, y);
         defineEnemy();
-        velocity = new Vector2(0.2f, 0);
+        velocity = new Vector2(-0.2f, 0);
+        //velocity = new Vector2(0, 0);
     }
 
     // posibil de scos y
@@ -30,6 +31,7 @@ public abstract class Enemy extends Sprite {
     }
 
     protected abstract void defineEnemy();
-    public abstract void hitOnHead();
+    public abstract void hitOnHead(Player player);
+    public abstract void onEnemyHit(Enemy enemy);
     public abstract void update(float delta);
 }

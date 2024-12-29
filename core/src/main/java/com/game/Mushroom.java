@@ -17,6 +17,7 @@ public class Mushroom extends Enemy{
     private Array<TextureRegion> frames;
     private boolean setToDestroy;
     private boolean destroyed;
+    private boolean runningRight;
 
     public Mushroom(PlayScreen screen, float x, float y) {
         super(screen, x, y);
@@ -40,20 +41,31 @@ public class Mushroom extends Enemy{
         setBounds(getX(), getY(), 15 / Platformer.PPM, 15 / Platformer.PPM);
         setToDestroy = false;
         destroyed = false;
+        runningRight = false;
     }
 
     public void update(float delta) {
+        TextureRegion region = mushroomWalk.getKeyFrame(stateTime, true);
         stateTime += delta;
         // destroy the body
         if (setToDestroy && !destroyed) {
             world.destroyBody(body);
             destroyed = true;
-            setRegion(mushroomDead.getKeyFrame(stateTime, true));
+            setRegion(mushroomDead.getKeyFrame(stateTime));
             stateTime = 0;
         } else if (!destroyed) {
+            if ((body.getLinearVelocity().x < 0 || !runningRight) && region.isFlipX()) {
+                region.flip(true, false);
+                runningRight = false;
+            }
+            // if player is running right and is facing left
+            else if ((body.getLinearVelocity().x > 0 || runningRight) && !region.isFlipX()) {
+                region.flip(true, false);
+                runningRight = true;
+            }
             body.setLinearVelocity(velocity);
             setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
-            setRegion(mushroomWalk.getKeyFrame(stateTime, true));
+            setRegion(region);
         }
     }
 
@@ -69,7 +81,7 @@ public class Mushroom extends Enemy{
         CircleShape shape = new CircleShape();
         shape.setRadius(5 / Platformer.PPM);
 
-        // set the snail's filter
+        // set the mushroom's filter
         fdef.filter.categoryBits = Platformer.ENEMY_BIT;
         // what the snail can collide with
         fdef.filter.maskBits = Platformer.Ground_BIT | Platformer.BOX_BIT | Platformer.COIN_BIT | Platformer.PLAYER_BIT | Platformer.WALL_BIT | Platformer.ENEMY_BIT;
@@ -77,7 +89,7 @@ public class Mushroom extends Enemy{
         fdef.shape = shape;
         body.createFixture(fdef).setUserData(this);
 
-        //create snail's head
+        //create mushroom's head
         PolygonShape head = new PolygonShape();
         Vector2[] vertices = new Vector2[4];
         vertices[0] = new Vector2(-6, 6).scl(1 / Platformer.PPM);
@@ -102,7 +114,15 @@ public class Mushroom extends Enemy{
 
     // if snail gets hit on head, it gets destroyed
     @Override
-    public void hitOnHead() {
+    public void hitOnHead(Player player) {
         setToDestroy = true;
+    }
+
+    public void onEnemyHit(Enemy enemy) {
+        if (enemy instanceof Snail && ((Snail) enemy).currentState == Snail.State.MOVING_SHELL) {
+            setToDestroy = true;
+        } else {
+            reverseVelocity(true, false);
+        }
     }
 }
