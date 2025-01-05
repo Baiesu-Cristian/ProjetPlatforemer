@@ -1,10 +1,16 @@
-package com.game;
+package com.game.tools;
 
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
+import com.game.*;
+import com.game.screens.PlayScreen;
+import com.game.sprites.items.Box;
+import com.game.sprites.items.Coin;
+import com.game.sprites.enemies.Mushroom;
+import com.game.sprites.enemies.Snail;
 
 public class WorldCreator {
     private Array<Snail> snails;

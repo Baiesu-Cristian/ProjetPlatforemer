@@ -1,4 +1,4 @@
-package com.game;
+package com.game.sprites;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -6,6 +6,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
+import com.game.Platformer;
+import com.game.screens.PlayScreen;
+import com.game.sprites.enemies.Enemy;
+import com.game.sprites.enemies.Snail;
 
 public class Player extends Sprite {
     public enum State {STANDING, RUNNING, JUMPING, FALLING, DEAD}
@@ -58,6 +62,7 @@ public class Player extends Sprite {
         playerDead = new Animation<>(0.1f, frames);
         frames.clear();
 
+        // initial values for player location
         definePlayer();
         setBounds(0, 0, 16 / Platformer.PPM, 16 / Platformer.PPM);
         setRegion(playerStand);
@@ -88,6 +93,7 @@ public class Player extends Sprite {
             region.flip(true, false);
             runningRight = true;
         }
+        // if current state is the same as previous one increase timer, if not, reset it
         stateTimer = currentState == previousState ? stateTimer + delta : 0;
         previousState = currentState;
         return region;
@@ -149,10 +155,6 @@ public class Player extends Sprite {
             }
             body.applyLinearImpulse(new Vector2(1f, 4f), body.getWorldCenter(), true);
         }
-    }
-
-    public boolean isDead() {
-        return playerIsDead;
     }
 
     public float getStateTimer() {

@@ -1,4 +1,4 @@
-package com.game;
+package com.game.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -13,6 +13,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.game.*;
+import com.game.sprites.enemies.Enemy;
+import com.game.sprites.Player;
+import com.game.tools.WorldContactListener;
+import com.game.tools.WorldCreator;
 
 /** First screen of the application. Displayed after the application is created. */
 public class PlayScreen implements Screen {
@@ -71,12 +76,11 @@ public class PlayScreen implements Screen {
 
     @Override
     public void show() {
-        // Prepare your screen here.
     }
 
     public void handleInput() {
         if (player.currentState != Player.State.DEAD) {
-            if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+            if (Gdx.input.isKeyJustPressed(Input.Keys.UP) && player.currentState != Player.State.JUMPING && player.currentState != Player.State.FALLING) {
                 player.body.applyLinearImpulse(new Vector2(0, 4f), player.body.getWorldCenter(), true);
             }
             if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.body.getLinearVelocity().x <= 2) { //max speed
@@ -102,6 +106,7 @@ public class PlayScreen implements Screen {
         for (Enemy enemy : creator.getSnails()) {
             enemy.update(delta);
         }
+        // update mushrooms
         for (Enemy enemy : creator.getMushrooms()) {
             enemy.update(delta);
         }
@@ -115,7 +120,6 @@ public class PlayScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        // Draw your screen here. "delta" is the time since last render in seconds.
         update(delta);
         // Clear the game screen
         Gdx.gl.glClearColor(0, 0, 0, 1);

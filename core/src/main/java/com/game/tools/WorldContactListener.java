@@ -1,7 +1,10 @@
-package com.game;
+package com.game.tools;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.physics.box2d.*;
+import com.game.sprites.enemies.Enemy;
+import com.game.sprites.items.Interactive;
+import com.game.Platformer;
+import com.game.sprites.Player;
 
 // gets called when two fixtures collide with each other
 public class WorldContactListener implements ContactListener {

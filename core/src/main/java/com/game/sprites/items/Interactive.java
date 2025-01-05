@@ -1,4 +1,4 @@
-package com.game;
+package com.game.sprites.items;
 
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -7,6 +7,8 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
+import com.game.Platformer;
+import com.game.screens.PlayScreen;
 
 public abstract class Interactive {
     protected World world;

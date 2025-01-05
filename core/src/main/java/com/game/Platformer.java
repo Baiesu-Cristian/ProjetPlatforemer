@@ -2,8 +2,10 @@ package com.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.game.screens.PlayScreen;
 
 public class Platformer extends Game {
+    // virtual screen size and box2d scale
     public static final int V_WIDTH = 400;
     public static final int V_HEIGHT = 200;
     public static final float PPM = 100;
@@ -30,5 +32,11 @@ public class Platformer extends Game {
     @Override
     public void render() {
         super.render();
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        batch.dispose();
     }
 }
