@@ -19,14 +19,13 @@ public class Snail extends Enemy {
     public State previousState;
     private float stateTime;
     private Animation<TextureRegion> snailWalk;
-    private Array<TextureRegion> frames;
     private TextureRegion shell;
     private boolean destroyed;
     private boolean runningRight;
 
     public Snail(PlayScreen screen, float x, float y) {
         super(screen, x, y);
-        frames = new Array<TextureRegion>();
+        Array<TextureRegion> frames = new Array<>();
         for (int i = 0; i < 10; i++) {
             frames.add(new TextureRegion(screen.getAtlas().findRegion("snail"), i * 38, 0, 38, 24));
         }
@@ -45,13 +44,12 @@ public class Snail extends Enemy {
             default -> snailWalk.getKeyFrame(stateTime, true);
         };
 
-        //posibil de scos runningRight
-        // if snail is moving left and is facing right
+        // si l'escargot marche à gauche et regarde à droite
         if ((velocity.x < 0 || !runningRight) && region.isFlipX()) {
             region.flip(true, false);
             runningRight = false;
         }
-        // if snail is moving right and is facing left
+        // si l'escargot marche à droite et regarde à gauche
         else if ((velocity.x > 0 || runningRight) && !region.isFlipX()) {
             region.flip(true, false);
             runningRight = true;
@@ -80,23 +78,18 @@ public class Snail extends Enemy {
         }
     }
 
-    // if snail gets hit on head, it transforms to shell
+    // si l'escargot est frappé à la tête, il se transforme en coquille
     @Override
     public void hitOnHead(Player player) {
-        // Only allow state change if we're walking
         if (currentState == State.WALKING) {
             currentState = State.STANDING_SHELL;
             velocity.x = 0;
-            // Add small upward impulse to player with direction consideration
-            float bounceForce = 4f;
-            // If snail is moving right, add a small leftward force to the player
             if (runningRight) {
-                player.body.setLinearVelocity(-0.5f, bounceForce);
+                player.body.setLinearVelocity(-0.5f, 4f);
             } else {
-                player.body.setLinearVelocity(0.5f, bounceForce);
+                player.body.setLinearVelocity(0.5f, 4f);
             }
         }
-        // Only allow kick if we're explicitly in STANDING_SHELL state
         else if (currentState == State.STANDING_SHELL) {
             kick(player.getX() <= this.getX() ? KICK_RIGHT_SPEED : KICK_LEFT_SPEED);
         }
@@ -108,7 +101,7 @@ public class Snail extends Enemy {
     }
 
     public void onEnemyHit(Enemy enemy) {
-        // when snail hits another snail
+        // quand un escargot touche un autre escargot
         if (enemy instanceof Snail) {
             if (((Snail) enemy).currentState == State.MOVING_SHELL && currentState != State.MOVING_SHELL) {
                 killed();
@@ -126,7 +119,7 @@ public class Snail extends Enemy {
         return currentState;
     }
 
-    //what happens when a snail dies
+    // quand l'escargot meurt
     public void killed() {
         currentState = State.DEAD;
         Filter filter = new Filter();

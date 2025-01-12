@@ -19,42 +19,35 @@ import com.game.sprites.Player;
 import com.game.tools.WorldContactListener;
 import com.game.tools.WorldCreator;
 
-/** First screen of the application. Displayed after the application is created. */
 public class PlayScreen implements Screen {
     private Platformer game;
     private TextureAtlas atlas;
     private OrthographicCamera gamecam;
     private Viewport gamePort;
-    // Tiled map variables
-    private TmxMapLoader mapLoader;
     private TiledMap map;
     private OrthogonalTiledMapRenderer renderer;
-    // box2d variables
+    // variables box2d
     private World world;
     private WorldCreator creator;
-    private Box2DDebugRenderer b2dr;
     // sprites
     private Player player;
 
     public PlayScreen(Platformer game) {
         this.game = game;
 
-        atlas = new TextureAtlas("test4");
-        // create cam used to follow player through world
+        atlas = new TextureAtlas("test5");
+        // camera pour suivre le personnage dans le monde
         gamecam = new OrthographicCamera();
-        // create a fitViewport to maintain virtual aspect ratio despite screen adjustments
         gamePort = new FitViewport(Platformer.V_WIDTH / Platformer.PPM, Platformer.V_HEIGHT / Platformer.PPM, gamecam);
-        // load the map and setup the map renderer
-        mapLoader = new TmxMapLoader();
+        // charger la mappe
+        TmxMapLoader mapLoader = new TmxMapLoader();
         map = mapLoader.load("new.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1 / Platformer.PPM);
-        // center the gamecam at the start of the game
+        // centrer la camera au debut du jeu
         gamecam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
-        // create world and gravity
+        // créer le monde et la gravité
         world = new World(new Vector2(0, -10), true);
-        // de scos
-        b2dr = new Box2DDebugRenderer();
-        // create player
+        // créer le joueur
         player = new Player(this);
 
         creator = new WorldCreator(this);
@@ -98,19 +91,23 @@ public class PlayScreen implements Screen {
 
     public void update(float delta) {
         handleInput();
-        // physics
+        // physiques
         world.step(1/60f, 6, 2);
-        // update player's position
+        // mettre à jour la position du joueur
         player.update(delta);
-        // update snails
+        // update escargots
         for (Enemy enemy : creator.getSnails()) {
             enemy.update(delta);
         }
-        // update mushrooms
+        // update champignons
         for (Enemy enemy : creator.getMushrooms()) {
             enemy.update(delta);
         }
-        // camera follows player's x coordinates
+        // update hérissons
+        for (Enemy enemy : creator.getTurtles()) {
+            enemy.update(delta);
+        }
+        // camera suit la coordonnée x du joueur
         if (player.currentState != Player.State.DEAD) {
             gamecam.position.x = player.body.getPosition().x;
         }
@@ -121,13 +118,11 @@ public class PlayScreen implements Screen {
     @Override
     public void render(float delta) {
         update(delta);
-        // Clear the game screen
+        // effacer l'écran du jeu
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        // render the game map
+        // render la mappe
         renderer.render();
-        // render the debug lines (DE SCOS)
-        b2dr.render(world, gamecam.combined);
 
         game.batch.setProjectionMatrix(gamecam.combined);
         game.batch.begin();
@@ -136,6 +131,9 @@ public class PlayScreen implements Screen {
             enemy.draw(game.batch);
         }
         for (Enemy enemy : creator.getMushrooms()) {
+            enemy.draw(game.batch);
+        }
+        for (Enemy enemy : creator.getTurtles()) {
             enemy.draw(game.batch);
         }
         game.batch.end();
@@ -148,31 +146,25 @@ public class PlayScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        // Resize your screen here. The parameters represent the new window size.
         gamePort.update(width, height);
     }
 
     @Override
     public void pause() {
-        // Invoked when your application is paused.
     }
 
     @Override
     public void resume() {
-        // Invoked when your application is resumed after pause.
     }
 
     @Override
     public void hide() {
-        // This method is called when another screen replaces this one.
     }
 
     @Override
     public void dispose() {
-        // Destroy screen's assets here.
         map.dispose();
         renderer.dispose();
         world.dispose();
-        b2dr.dispose();
     }
 }

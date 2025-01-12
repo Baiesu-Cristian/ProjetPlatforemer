@@ -7,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import com.game.*;
 import com.game.screens.PlayScreen;
+import com.game.sprites.enemies.Turtle;
 import com.game.sprites.items.Box;
 import com.game.sprites.items.Coin;
 import com.game.sprites.enemies.Mushroom;
@@ -15,6 +16,7 @@ import com.game.sprites.enemies.Snail;
 public class WorldCreator {
     private Array<Snail> snails;
     private Array<Mushroom> mushrooms;
+    private Array<Turtle> turtles;
 
     public WorldCreator(PlayScreen screen) {
         World world = screen.getWorld();
@@ -25,7 +27,7 @@ public class WorldCreator {
         FixtureDef fdef = new FixtureDef();
         Body body;
 
-        // create ground bodies
+        // créer le terrain
         for (RectangleMapObject object : map.getLayers().get("ground").getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = object.getRectangle();
             bdef.type = BodyDef.BodyType.StaticBody;
@@ -37,7 +39,7 @@ public class WorldCreator {
             body.createFixture(fdef);
         }
 
-        // create wall bodies (for enemies)
+        // créer les murs
         for (RectangleMapObject object : map.getLayers().get("wall").getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = object.getRectangle();
             bdef.type = BodyDef.BodyType.StaticBody;
@@ -50,28 +52,35 @@ public class WorldCreator {
             body.createFixture(fdef);
         }
 
-        //create coin bodies
+        // créer les monnaies
         for (RectangleMapObject object : map.getLayers().get("coin").getObjects().getByType(RectangleMapObject.class)) {
             new Coin(screen, object);
         }
 
-        // create box bodies
+        // créer les boites
         for (RectangleMapObject object : map.getLayers().get("box").getObjects().getByType(RectangleMapObject.class)) {
             new Box(screen, object);
         }
 
-        // create snails
-        snails = new Array<Snail>();
+        // créer les escargots
+        snails = new Array<>();
         for (RectangleMapObject object : map.getLayers().get("snail").getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = object.getRectangle();
             snails.add(new Snail(screen, rect.getX() / Platformer.PPM, rect.getY() / Platformer.PPM));
         }
 
-        // create mushrooms
-        mushrooms = new Array<Mushroom>();
+        // créer les champignons
+        mushrooms = new Array<>();
         for (RectangleMapObject object : map.getLayers().get("mushroom").getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = object.getRectangle();
             mushrooms.add(new Mushroom(screen, rect.getX() / Platformer.PPM, rect.getY() / Platformer.PPM));
+        }
+
+        // créer les hérissons
+        turtles = new Array<>();
+        for (RectangleMapObject object : map.getLayers().get("turtle").getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rect = object.getRectangle();
+            turtles.add(new Turtle(screen, rect.getX() / Platformer.PPM, rect.getY() / Platformer.PPM));
         }
     }
 
@@ -81,5 +90,9 @@ public class WorldCreator {
 
     public Array<Mushroom> getMushrooms() {
         return mushrooms;
+    }
+
+    public Array<Turtle> getTurtles() {
+        return turtles;
     }
 }

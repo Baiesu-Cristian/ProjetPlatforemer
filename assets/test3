@@ -1,7 +1,0 @@
-test3.png
-size:4096,32
-repeat:none
-ninja
-bounds:0,0,2048,32
-snail
-bounds:2048,0,1024,32

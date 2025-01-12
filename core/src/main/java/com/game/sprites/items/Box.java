@@ -10,11 +10,4 @@ public class Box extends Interactive{
         fixture.setUserData(this);
         setCategoryFilter(Platformer.BOX_BIT);
     }
-
-    @Override
-    public void onHeadHit() {
-        // if player's head collides with the box, it gets destroyed
-        setCategoryFilter(Platformer.DESTROYED_BIT);
-        getCell().setTile(null);
-    }
 }

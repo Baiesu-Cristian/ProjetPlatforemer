@@ -19,10 +19,8 @@ public abstract class Enemy extends Sprite {
         setPosition(x, y);
         defineEnemy();
         velocity = new Vector2(-0.15f, 0);
-        //velocity = new Vector2(0, 0);
     }
 
-    // posibil de scos y
     public void reverseVelocity(boolean x, boolean y) {
         if (x) {
             velocity.x = -velocity.x;
@@ -46,15 +44,15 @@ public abstract class Enemy extends Sprite {
         CircleShape shape = new CircleShape();
         shape.setRadius(5 / Platformer.PPM);
 
-        // set the enemy's filter
+        // définir le filtre de l'ennemi
         fdef.filter.categoryBits = Platformer.ENEMY_BIT;
-        // what the enemy can collide with
+        // les objects que l'ennemie peut toucher
         fdef.filter.maskBits = Platformer.Ground_BIT | Platformer.BOX_BIT | Platformer.COIN_BIT | Platformer.PLAYER_BIT | Platformer.WALL_BIT | Platformer.ENEMY_BIT;
 
         fdef.shape = shape;
         body.createFixture(fdef).setUserData(this);
 
-        //create enemy's head
+        // créer la tete de l'ennemie
         PolygonShape head = new PolygonShape();
         Vector2[] vertices = new Vector2[4];
         vertices[0] = new Vector2(-5, 6).scl(1 / Platformer.PPM);
@@ -65,8 +63,6 @@ public abstract class Enemy extends Sprite {
 
         fdef.shape = head;
         fdef.filter.categoryBits = Platformer.ENEMY_HEAD_BIT;
-        //small bounce when player hits snail's head
-        //fdef.restitution = 1.5f;
         body.createFixture(fdef).setUserData(this);
     }
 }

@@ -12,23 +12,22 @@ public class Mushroom extends Enemy{
     private float stateTime;
     private Animation<TextureRegion> mushroomWalk;
     private Animation<TextureRegion> mushroomDead;
-    private Array<TextureRegion> frames;
     private boolean setToDestroy;
     private boolean destroyed;
     private boolean runningRight;
 
     public Mushroom(PlayScreen screen, float x, float y) {
         super(screen, x, y);
-        frames = new Array<TextureRegion>();
+        Array<TextureRegion> frames = new Array<>();
 
-        // walking animation
+        // animation pour marcher
         for (int i = 0; i < 16; i++) {
             frames.add(new TextureRegion(screen.getAtlas().findRegion("mushroom"), i * 32, 0, 32, 32));
         }
         mushroomWalk = new Animation<>(0.1f, frames);
         frames.clear();
 
-        // getting hit animation
+        // animation se faire toucher
         for (int i = 16; i < 21; i++) {
             frames.add(new TextureRegion(screen.getAtlas().findRegion("mushroom"), i * 32, 0, 32, 32));
         }
@@ -45,19 +44,19 @@ public class Mushroom extends Enemy{
     public void update(float delta) {
         TextureRegion region = mushroomWalk.getKeyFrame(stateTime, true);
         stateTime += delta;
-        // destroy the body
+        // détruire l'objet
         if (setToDestroy && !destroyed) {
             world.destroyBody(body);
             destroyed = true;
             setRegion(mushroomDead.getKeyFrame(stateTime));
             stateTime = 0;
         } else if (!destroyed) {
-            // if mushroom is moving left and facing right
+            // si le champignon marche à gauche et regarde à droite
             if ((body.getLinearVelocity().x < 0 || !runningRight) && region.isFlipX()) {
                 region.flip(true, false);
                 runningRight = false;
             }
-            // if mushroom is moving right and is facing left
+            // si le champignon marche à droite et regarde à gauche
             else if ((body.getLinearVelocity().x > 0 || runningRight) && !region.isFlipX()) {
                 region.flip(true, false);
                 runningRight = true;
@@ -68,21 +67,21 @@ public class Mushroom extends Enemy{
         }
     }
 
-    // the mushroom disappears after 2 seconds
+    // le champignon disparait après 2 secondes
     public void draw(Batch batch) {
         if (!destroyed || stateTime < 2) {
             super.draw(batch);
         }
     }
 
-    // if snail gets hit on head, it gets destroyed
+    // si le champignon est frappé à la tête, il est détruit
     @Override
     public void hitOnHead(Player player) {
         setToDestroy = true;
     }
 
     public void onEnemyHit(Enemy enemy) {
-        // if it gets hit by a moving shell, it gets destroyed
+        // s'il est touché par une coquille en mouvement, il est détruit
         if (enemy instanceof Snail && ((Snail) enemy).currentState == Snail.State.MOVING_SHELL) {
             setToDestroy = true;
         } else {

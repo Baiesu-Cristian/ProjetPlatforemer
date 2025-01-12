@@ -9,12 +9,8 @@ public class Coin extends Interactive{
         super(screen, object);
         fixture.setUserData(this);
         setCategoryFilter(Platformer.COIN_BIT);
-    }
 
-    @Override
-    public void onHeadHit() {
-        // if player's head collides with the coin, it gets collected
-        setCategoryFilter(Platformer.DESTROYED_BIT);
-        getCell().setTile(null);
+        // permets de passer à travers les monnaies
+        fixture.setSensor(true);
     }
 }

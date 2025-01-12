@@ -5,12 +5,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.game.screens.PlayScreen;
 
 public class Platformer extends Game {
-    // virtual screen size and box2d scale
+    // taille d'écran virtuelle et échelle box2d
     public static final int V_WIDTH = 400;
     public static final int V_HEIGHT = 200;
     public static final float PPM = 100;
 
-    //default values for filters
+    // valeurs par défaut pour les filtres
     public static final short Nothing_BIT = 0;
     public static final short Ground_BIT = 1;
     public static final short PLAYER_BIT = 2;

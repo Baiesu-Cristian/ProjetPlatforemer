@@ -1,0 +1,11 @@
+test5.png
+size:8192,32
+repeat:none
+mushroom
+bounds:7168,0,1024,32
+ninja
+bounds:4096,0,2048,32
+snail
+bounds:6144,0,1024,32
+turtle
+bounds:0,0,4096,32
